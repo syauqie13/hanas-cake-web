@@ -19,6 +19,8 @@ class Product extends Model
         'price',
         'stock',
         'discount',
+        'image',
+        'slug',
     ];
 
     /**

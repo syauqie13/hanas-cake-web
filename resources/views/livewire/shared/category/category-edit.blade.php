@@ -22,6 +22,13 @@
                                 wire:model.defer="name">
                             @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
+
+                        <div class="mb-3 form-group">
+                            <label class="fw-semibold">Slug</label>
+                            <input type="text" class="rounded-lg shadow-sm form-control"
+                                placeholder="Slug otomatis dari nama (bisa diubah)" wire:model.defer="slug">
+                            @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
                     </div>
 
                     <!-- Footer -->

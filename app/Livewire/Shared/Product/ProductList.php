@@ -58,6 +58,11 @@ class ProductList extends Component
         $this->dispatch('openEditModal', id: $id);
     }
 
+    public function deleteConfirm($id)
+    {
+        $this->dispatch('confirmDelete', id: $id);
+    }
+
     public function render()
     {
         return view('livewire.shared.product.product-list', [

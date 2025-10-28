@@ -37,6 +37,14 @@
                             @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
+                        <!-- Slug -->
+                        <div class="mb-3 form-group">
+                            <label class="fw-semibold">Slug</label>
+                            <input type="text" class="rounded-lg shadow-sm form-control"
+                                placeholder="Slug otomatis dari nama (bisa diubah)" wire:model.defer="slug" readonly>
+                            @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
                         <!-- Harga -->
                         <div class="mb-3 form-group">
                             <label class="fw-semibold">Harga</label>
@@ -62,7 +70,19 @@
                             @error('discount') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
+                        <!-- Gambar Produk -->
+                        <div class="mb-3 form-group">
+                            <label class="fw-semibold">Gambar Produk</label>
+                            <input type="file" class="form-control" wire:model="image" accept="image/*">
+                            @if ($image)
+                                <img src="{{ $image->temporaryUrl() }}" class="mt-2 rounded shadow-sm" alt="Preview"
+                                    style="width: 120px; height: auto;">
+                            @endif
+                            @error('image') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
                     </div>
+
 
                     <!-- Footer -->
                     <div class="pt-0 border-0 modal-footer">

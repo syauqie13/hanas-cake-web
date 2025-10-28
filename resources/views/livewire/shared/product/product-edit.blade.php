@@ -22,8 +22,16 @@
                         <div class="mb-3 form-group">
                             <label class="fw-semibold">Nama Produk</label>
                             <input type="text" class="rounded-lg shadow-sm form-control"
-                                placeholder="Masukkan nama produk" wire:model.defer="name">
+                                placeholder="Masukkan nama produk" wire:model.live="name">
                             @error('name') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <!-- Slug -->
+                        <div class="mb-3 form-group">
+                            <label class="fw-semibold">Slug</label>
+                            <input type="text" class="rounded-lg shadow-sm form-control"
+                                placeholder="Slug otomatis dari nama (bisa diubah)" wire:model.defer="slug">
+                            @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Kategori -->
@@ -43,26 +51,52 @@
                         <!-- Harga -->
                         <div class="mb-3 form-group">
                             <label class="fw-semibold">Harga</label>
-                            <input type="number" class="rounded-lg shadow-sm form-control" placeholder="Masukkan harga"
-                                wire:model.defer="price" min="0" step="0.01">
+                            <input type="number" class="rounded-lg shadow-sm form-control"
+                                placeholder="Masukkan harga produk" wire:model.defer="price" min="0" step="0.01">
                             @error('price') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Stok -->
                         <div class="mb-3 form-group">
                             <label class="fw-semibold">Stok</label>
-                            <input type="number" class="rounded-lg shadow-sm form-control" placeholder="Masukkan stok"
-                                wire:model.defer="stock" min="0" step="1">
+                            <input type="number" class="rounded-lg shadow-sm form-control"
+                                placeholder="Masukkan stok produk" wire:model.defer="stock" min="0" step="1">
                             @error('stock') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
 
-                        <!-- Diskon (%) -->
+                        <!-- Diskon -->
                         <div class="mb-3 form-group">
                             <label class="fw-semibold">Diskon (%)</label>
                             <input type="number" class="rounded-lg shadow-sm form-control"
                                 placeholder="Masukkan diskon (0-100)" wire:model.defer="discount" min="0" max="100"
                                 step="0.01">
                             @error('discount') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <!-- Gambar Produk -->
+                        <div class="mb-3 form-group">
+                            <label class="fw-semibold">Gambar Produk</label>
+                            <input type="file" class="form-control" wire:model="image" accept="image/*">
+
+                            <!-- Preview gambar lama -->
+                            @if ($old_image)
+                                <div class="mt-2">
+                                    <label class="text-muted small">Gambar saat ini:</label><br>
+                                    <img src="{{ asset('storage/' . $old_image) }}" class="mt-1 rounded shadow-sm"
+                                        alt="Gambar lama" style="width: 120px; height: auto;">
+                                </div>
+                            @endif
+
+                            <!-- Preview gambar baru -->
+                            @if ($image)
+                                <div class="mt-2">
+                                    <label class="text-muted small">Gambar baru:</label><br>
+                                    <img src="{{ $image->temporaryUrl() }}" class="mt-1 rounded shadow-sm"
+                                        alt="Preview baru" style="width: 120px; height: auto;">
+                                </div>
+                            @endif
+
+                            @error('image') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                     </div>
 

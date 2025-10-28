@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->decimal('price', 10, 2);
             $table->integer('stock');
             $table->decimal('discount', 5, 2)->default(0);
+            $table->string('gambar');
+            $table->string('slug');
             $table->timestamps();
         });
     }

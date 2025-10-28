@@ -7,7 +7,7 @@
                     <!-- Header -->
                     <div class="pb-0 border-0 modal-header">
                         <h5 class="modal-title fw-bold text-dark" id="createModalLabel">
-                            <i class="mr-2 fas fa-user-plus text-primary"></i> Tambah Karyawan
+                            <i class="mr-2 fas fa-user-plus text-primary"></i> Tambah Kategori
                         </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" class="fs-4">&times;</span>
@@ -21,6 +21,13 @@
                             <input type="text" class="rounded-lg shadow-sm form-control" placeholder="Masukkan nama"
                                 wire:model.defer="name">
                             @error('name') <small class="text-danger">{{ $message }}</small> @enderror
+                        </div>
+
+                        <div class="mb-3 form-group">
+                            <label class="fw-semibold">Slug</label>
+                            <input type="text" class="rounded-lg shadow-sm form-control"
+                                placeholder="Slug otomatis dari nama (bisa diubah)" wire:model.defer="slug" readonly>
+                            @error('slug') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                     </div>
 
