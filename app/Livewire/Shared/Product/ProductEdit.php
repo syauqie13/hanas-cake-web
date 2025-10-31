@@ -81,16 +81,19 @@ class ProductEdit extends Component
             $imagePath = $this->old_image;
         }
 
-        // Update data produk
+        // Normalisasi nilai discount sebelum disimpan
+        $discount = $this->discount === '' ? null : $this->discount;
+
         $product->update([
             'name' => $this->name,
             'slug' => $this->slug,
             'category_id' => $this->categoryId,
             'price' => $this->price,
             'stock' => $this->stock,
-            'discount' => $this->discount,
+            'discount' => $discount, // sudah aman
             'image' => $imagePath,
         ]);
+
 
         // Tutup modal dan beri notifikasi
         $this->dispatch('hideEditModal');

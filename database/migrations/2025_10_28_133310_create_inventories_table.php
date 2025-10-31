@@ -10,15 +10,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
             $table->string('name');
-            $table->decimal('price', 10, 2);
-            $table->integer('stock');
-            $table->decimal('discount', 5, 2)->nullable();
-            $table->string('image');
-            $table->string('slug');
+            $table->enum('type', ['bahan_baku', 'produk_jadi']);
+            $table->enum('unit', ['kg', 'box', 'pack', 'liter']);
+            $table->decimal('stock', 10, 2)->default(0);
+            $table->decimal('unit_price', 10, 2)->default(0);
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('inventories');
     }
 };

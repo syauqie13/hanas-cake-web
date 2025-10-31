@@ -36,10 +36,15 @@
                     <h1>Data Produk</h1>
                 </div>
 
-                <!-- Tombol Tambah Produk -->
-                <button wire:click="create" class="shadow-sm btn btn-primary d-flex align-items-center">
-                    <i class="mr-2 fas fa-box"></i> Tambah Produk
-                </button>
+                @auth
+                    @if (Auth::user()->role === 'karyawan')
+                        <!-- Tombol Tambah Produk -->
+                        <button wire:click="create" class="shadow-sm btn btn-primary d-flex align-items-center">
+                            <i class="mr-2 fas fa-box"></i> Tambah Produk
+                        </button>
+                    @endif
+                @endauth
+
             </div>
 
             <div class="section-body">
@@ -89,8 +94,9 @@
                                                     </td>
 
                                                     <td class="text-center align-middle">
-                                                        {{ $product->discount }}%
+                                                        {{ $product->discount === null ? '0.00%' : $product->discount . '%' }}
                                                     </td>
+
 
                                                     <td class="text-center align-middle">
                                                         <div class="dropdown">

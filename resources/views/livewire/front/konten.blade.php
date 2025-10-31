@@ -1,149 +1,4 @@
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BizFlow - Solusi POS & E-Commerce Terpadu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
-
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .feature-card {
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
-        }
-
-        .floating {
-            animation: floating 3s ease-in-out infinite;
-        }
-
-        @keyframes floating {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.8s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .stat-counter {
-            font-size: 3rem;
-            font-weight: 800;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .scroll-smooth {
-            scroll-behavior: smooth;
-        }
-    </style>
-</head>
-
-<body class="scroll-smooth">
-    <!-- Navbar -->
-    <nav class="fixed z-50 w-full glass-effect">
-        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <i class="mr-2 text-2xl text-purple-600 fas fa-bolt"></i>
-                    <span class="text-xl font-bold text-white">BizFlow</span>
-                </div>
-                <div class="hidden space-x-8 md:flex">
-                    <a href="#features" class="text-white transition hover:text-purple-300">Fitur</a>
-                    <a href="#benefits" class="text-white transition hover:text-purple-300">Keuntungan</a>
-                    <a href="#pricing" class="text-white transition hover:text-purple-300">Harga</a>
-                    <a href="#contact" class="text-white transition hover:text-purple-300">Kontak</a>
-                </div>
-                <div>
-                    @if (Route::has('login'))
-                        <nav class="flex items-center justify-end gap-4">
-                            @auth
-                                @if (Auth::user()->role === 'admin')
-                                    <a href="{{ route('admin.dashboard') }}"
-                                        class="px-6 py-2 font-semibold text-white transition rounded-full shadow-lg bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700">
-                                        <i class="mr-2 fas fa-tachometer-alt"></i>Dashboard
-                                    </a>
-                                @elseif (Auth::user()->role === 'karyawan')
-                                    <a href="{{ route('karyawan.dashboard') }}"
-                                        class="px-6 py-2 font-semibold text-white transition rounded-full shadow-lg bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700">
-                                        <i class="mr-2 fas fa-tachometer-alt"></i>Dashboard
-                                    </a>
-                                @endif
-                            @else
-                                <a href="{{ route('login') }}"
-                                    class="px-6 py-2 font-semibold text-white transition hover:text-purple-200">
-                                    Log in
-                                </a>
-
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}"
-                                        class="px-6 py-2 font-semibold text-purple-600 transition bg-white rounded-full shadow-lg hover:bg-purple-50">
-                                        Register
-                                    </a>
-                                @endif
-                            @endauth
-                        </nav>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
+<div>
     <section class="relative flex items-center min-h-screen overflow-hidden gradient-bg">
         <div class="absolute inset-0 opacity-10">
             <div class="absolute bg-white rounded-full top-20 left-20 w-72 h-72 blur-3xl"></div>
@@ -381,7 +236,7 @@
             <div class="grid items-center gap-12 md:grid-cols-2">
                 <div>
                     <h2 class="mb-6 text-4xl font-bold text-gray-900 md:text-5xl">
-                        Kenapa Memilih <span class="gradient-text">BizFlow</span>?
+                        Kenapa Memilih <span class="gradient-text">QieFlow.</span>?
                     </h2>
                     <div class="space-y-6">
                         <div class="flex items-start">
@@ -553,3 +408,4 @@
                         Pilih Professional
                     </button>
                 </div>
+            </div>

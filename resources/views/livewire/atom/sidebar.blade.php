@@ -9,23 +9,49 @@
             </div>
             <ul class="sidebar-menu">
                 <li class="menu-header">Dashboard</li>
-                <li class="dropdown {{ request()->routeIs('admin.dashboard*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.dashboard') }}"  wire:navigate class="nav-link"><i class="fas fa-fire"></i><span>Dashboard</span></a>
-                    <!-- <ul class="dropdown-menu">
-                        <li class=active><a class="nav-link" href="index-0.html">General Dashboard</a></li>
-                        <li><a class="nav-link" href="index.html">Ecommerce Dashboard</a></li>
-                    </ul> -->
-                </li>
-                <li class="menu-header">Manajemen</li>
-                <li class="dropdown {{ request()->routeIs('admin.list-karyawan*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.list-karyawan') }}" wire:navigate class="nav-link"><i class="fas fa-users"></i><span>Data Karyawan</span></a>
-                </li>
-                <li class="dropdown {{ request()->routeIs('admin.list-product*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.list-product') }}" wire:navigate class="nav-link"><i class="fas fa-box"></i><span>Data Product</span></a>
-                </li>
-                <li class="dropdown {{ request()->routeIs('admin.list-category*') ? 'active' : '' }}">
-                    <a href="{{ route('admin.list-category') }}" wire:navigate class="nav-link"><i class="fas fa-tags"></i><span>Data Category</span></a>
-                </li>
+                @if(Auth::check() && Auth::user()->role === 'admin')
+                    <li class="dropdown {{ request()->routeIs('admin.dashboard*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.dashboard') }}" wire:navigate class="nav-link"><i
+                                class="fas fa-fire"></i><span>Dashboard</span></a>
+                    </li>
+                    <li class="menu-header">Manajemen</li>
+                    <li class="dropdown {{ request()->routeIs('admin.list-karyawan*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.list-karyawan') }}" wire:navigate class="nav-link"><i
+                                class="fas fa-users"></i><span>Data Karyawan</span></a>
+                    </li>
+                    <li class="dropdown {{ request()->routeIs('admin.list-product*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.list-product') }}" wire:navigate class="nav-link"><i
+                                class="fas fa-box"></i><span>Data Product</span></a>
+                    </li>
+                    <li class="dropdown {{ request()->routeIs('admin.list-category*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.list-category') }}" wire:navigate class="nav-link"><i
+                                class="fas fa-tags"></i><span>Data Category</span></a>
+                    </li>
+                @endif
+
+                @if(Auth::check() && Auth::user()->role === 'karyawan')
+                    <li class="dropdown {{ request()->routeIs('karyawan.dashboard*') ? 'active' : '' }}">
+                        <a href="{{ route('karyawan.dashboard') }}" wire:navigate class="nav-link"><i
+                                class="fas fa-fire"></i><span>Dashboard</span></a>
+                    </li>
+                    <li class="menu-header">Manajemen</li>
+                    <li class="dropdown {{ request()->routeIs('karyawan.list-product*') ? 'active' : '' }}">
+                        <a href="{{ route('karyawan.list-product') }}" wire:navigate class="nav-link"><i
+                                class="fas fa-box"></i><span>Data Product</span></a>
+                    </li>
+                    <li class="dropdown {{ request()->routeIs('karyawan.list-category*') ? 'active' : '' }}">
+                        <a href="{{ route('karyawan.list-category') }}" wire:navigate class="nav-link"><i
+                                class="fas fa-tags"></i><span>Data Category</span></a>
+                    </li>
+                    <li class="menu-header">Kasir</li>
+                    <li class="dropdown {{ request()->routeIs('karyawan.pos*') ? 'active' : '' }}">
+                        <a href="{{ route('karyawan.pos') }}" wire:navigate class="nav-link">
+                            <i class="fas fa-cash-register"></i>
+                            <span>Transaksi POS</span>
+                        </a>
+                    </li>
+
+                @endif
             </ul>
 
             <div class="p-3 mt-4 mb-4 hide-sidebar-mini">

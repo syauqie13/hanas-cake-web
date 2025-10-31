@@ -37,9 +37,14 @@
                 </div>
 
                 <!-- Tombol Tambah Kategori -->
-                <button wire:click="create" class="shadow-sm btn btn-primary d-flex align-items-center">
-                    <i class="mr-2 fas fa-tags"></i> Tambah Kategori
-                </button>
+                @auth
+                    @if (Auth::user()->role === 'karyawan')
+                        <!-- Tombol Tambah Produk -->
+                        <button wire:click="create" class="shadow-sm btn btn-primary d-flex align-items-center">
+                            <i class="mr-2 fas fa-box"></i> Tambah Kategori
+                        </button>
+                    @endif
+                @endauth
             </div>
 
             <div class="section-body">
