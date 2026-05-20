@@ -3,49 +3,32 @@ name: Deploy Laravel Otomatis
 on:
   push:
     branches:
-      - main
+      - main  # Pastikan sesuai dengan nama branch utama lu
 
 jobs:
   web-deploy:
     name: Sync Files
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
+      - name: Ambil Kode Terbaru
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      # =========================
-      # ZIP BACKEND
-      # =========================
-      - name: Buat ZIP Backend
+      - name: "📦 Step 1.A: Bungkus Logic ke ZIP (Anti-Block)"
         run: |
-          zip -q -r deploy.zip . \
-          -x "*.git*" \
-          -x "vendor/*" \
-          -x "node_modules/*" \
-          -x "public/*" \
-          -x ".env" \
-          -x "bootstrap/cache/*"
+          zip -q -r deploy.zip . -x "**/.git**" "**/vendor/**" "**/node_modules/**" "public/**" ".env" "bootstrap/cache/**"
 
-      - name: Upload Backend ZIP
+      - name: "🚀 Step 1.B: Kirim ZIP via cURL"
         run: |
-          curl --ftp-create-dirs \
-          -T deploy.zip \
-          ftp://${{ secrets.FTP_SERVER }}/deploy.zip \
-          --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+          curl --ftp-method nocwd -T deploy.zip ftp://${{ secrets.FTP_SERVER }}/domains/hanascake.syauqiebill.my.id/deploy.zip --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
 
-      # =========================
-      # ZIP FRONTEND
-      # =========================
-      - name: Buat ZIP Frontend
+      - name: "📦 Step 2.A: Bungkus Tampilan (Frontend) ke ZIP"
         run: |
           cd public
-          zip -q -r ../public.zip . -x "assets/modules/*"
+          zip -q -r ../public.zip . -x "assets/modules/**"
           cd ..
 
-      - name: Upload Frontend ZIP
+      - name: "🚀 Step 2.B: Kirim ZIP Tampilan via cURL"
         run: |
-          curl --ftp-create-dirs \
-          -T public.zip \
-          ftp://${{ secrets.FTP_SERVER }}/public_html/public.zip \
-          --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+          curl --ftp-method nocwd -T public.zip ftp://${{ secrets.FTP_SERVER }}/domains/hanascake.syauqiebill.my.id/public_html/public.zip --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
