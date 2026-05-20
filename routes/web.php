@@ -51,10 +51,13 @@ Route::get('/gas-migrate', function () {
     return "Database berhasil di-fresh + seed!";
 });
 Route::get('/gas-fresh', function () {
-    // clear config cache
+    // 1. Wajib clear config cache dulu biar settingan public_html terbaca
+    Artisan::call('config:clear');
+
+    // 2. Baru jalankan perintah link
     Artisan::call('storage:link');
 
-    return "Storage link berhasil dibuat!";
+    return "Storage link berhasil dibuat ke public_html!";
 });
 
 Route::get('/', Konten::class)->name('front');
