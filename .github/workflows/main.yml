@@ -21,7 +21,7 @@ jobs:
 
       - name: "🚀 Step 1.B: Kirim ZIP via cURL"
         run: |
-          curl -T deploy.zip ftp://${{ secrets.FTP_SERVER }}/domains/hanascake.syauqiebill.my.id/public_html/deploy.zip --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+          curl -T deploy.zip ftp://${{ secrets.FTP_SERVER }}/domains/hanascake.syauqiebill.my.id/deploy.zip --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
 
       - name: "📦 Step 2.A: Bungkus Tampilan (Frontend) ke ZIP"
         run: |
