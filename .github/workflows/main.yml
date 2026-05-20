@@ -3,32 +3,49 @@ name: Deploy Laravel Otomatis
 on:
   push:
     branches:
-      - main  # Pastikan sesuai dengan nama branch utama lu
+      - main
 
 jobs:
   web-deploy:
     name: Sync Files
     runs-on: ubuntu-latest
+
     steps:
-      - name: Ambil Kode Terbaru
+      - name: Checkout Repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
-      - name: "📦 Step 1.A: Bungkus Logic ke ZIP (Anti-Block)"
+      # =========================
+      # ZIP BACKEND
+      # =========================
+      - name: Buat ZIP Backend
         run: |
-          zip -q -r deploy.zip . -x "**/.git**" "**/vendor/**" "**/node_modules/**" "public/**" ".env" "bootstrap/cache/**"
+          zip -q -r deploy.zip . \
+          -x "*.git*" \
+          -x "vendor/*" \
+          -x "node_modules/*" \
+          -x "public/*" \
+          -x ".env" \
+          -x "bootstrap/cache/*"
 
-      - name: "🚀 Step 1.B: Kirim ZIP via cURL"
+      - name: Upload Backend ZIP
         run: |
-          curl --ftp-method nocwd -T deploy.zip ftp://${{ secrets.FTP_SERVER }}/domains/hanascake.syauqiebill.my.id/deploy.zip --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+          curl --ftp-create-dirs \
+          -T deploy.zip \
+          ftp://${{ secrets.FTP_SERVER }}/deploy.zip \
+          --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
 
-      - name: "📦 Step 2.A: Bungkus Tampilan (Frontend) ke ZIP"
+      # =========================
+      # ZIP FRONTEND
+      # =========================
+      - name: Buat ZIP Frontend
         run: |
           cd public
-          zip -q -r ../public.zip . -x "assets/modules/**"
+          zip -q -r ../public.zip . -x "assets/modules/*"
           cd ..
 
-      - name: "🚀 Step 2.B: Kirim ZIP Tampilan via cURL"
+      - name: Upload Frontend ZIP
         run: |
-          curl --ftp-method nocwd -T public.zip ftp://${{ secrets.FTP_SERVER }}/domains/hanascake.syauqiebill.my.id/public_html/public.zip --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+          curl --ftp-create-dirs \
+          -T public.zip \
+          ftp://${{ secrets.FTP_SERVER }}/public_html/public.zip \
+          --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
