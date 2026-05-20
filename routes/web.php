@@ -50,6 +50,12 @@ Route::get('/gas-migrate', function () {
 
     return "Database berhasil di-fresh + seed!";
 });
+Route::get('/gas-fresh', function () {
+    // clear config cache
+    Artisan::call('storage:link');
+
+    return "Storage link berhasil dibuat!";
+});
 
 Route::get('/', Konten::class)->name('front');
 
