@@ -5,6 +5,18 @@
 
     RewriteEngine On
 
+    # ---------------------------------------------------------------
+    # CORS Headers untuk file statis (gambar produk, avatar, dll)
+    # Agar Flutter Web (Chrome) tidak kena 403 / CORS Block
+    # ---------------------------------------------------------------
+    <IfModule mod_headers.c>
+        <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico|css|js|woff|woff2|ttf|eot)$">
+            Header set Access-Control-Allow-Origin "*"
+            Header set Access-Control-Allow-Methods "GET, OPTIONS"
+            Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+        </FilesMatch>
+    </IfModule>
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
