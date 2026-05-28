@@ -51,13 +51,28 @@ Route::get('/gas-migrate', function () {
     return "Database berhasil di-fresh + seed!";
 });
 Route::get('/gas-fresh', function () {
-    // 1. Wajib clear config cache dulu biar settingan public_html terbaca
-    Artisan::call('config:clear');
+    // 1. Tentukan path target (sumber asli foto) dan link (tujuan di public_html)
+    // SESUAIKAN "syauqieb" dengan username DirectAdmin / nama folder home kamu!
+    $targetFolder = '/home/syauqieb/domains/hanascake.syauqiebill.my.id/storage/app/public';
+    $linkFolder = '/home/syauqieb/domains/hanascake.syauqiebill.my.id/public_html/storage';
 
-    // 2. Baru jalankan perintah link
-    Artisan::call('storage:link');
+    // 2. Jika folder link di public_html sudah ada atau berupa broken symlink, hapus dulu
+    if (file_exists($linkFolder) || is_link($linkFolder)) {
+        // Jika berupa link/shortcut, gunakan unlink
+        if (is_link($linkFolder)) {
+            unlink($linkFolder);
+        } else {
+            // Jika berupa folder biasa, hapus foldernya
+            File::deleteDirectory($linkFolder);
+        }
+    }
 
-    return "Storage link berhasil dibuat ke public_html!";
+    // 3. Buat symlink menggunakan fungsi murni PHP
+    if (symlink($targetFolder, $linkFolder)) {
+        return "🔥 Symlink sukses dibuat! Gambar harusnya sudah muncul.";
+    } else {
+        return "❌ Gagal membuat symlink. Cek kembali path foldernya.";
+    }
 });
 
 Route::get('/', Konten::class)->name('front');
