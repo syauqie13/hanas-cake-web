@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\ShippingZone;
+use Illuminate\Support\Facades\Storage; // Pastikan import ini jika pakai Storage::url
 
 class ProductController extends Controller
 {
@@ -15,7 +16,15 @@ class ProductController extends Controller
      */
     public function categories()
     {
-        $categories = Category::all();
+        $categories = Category::all()->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+                // Jika kategori juga punya image, bungkus dengan url/asset seperti ini:
+                'image' => $category->image ? url(Storage::url($category->image)) : null,
+            ];
+        });
+
         return response()->json([
             'success' => true,
             'message' => 'Daftar Kategori',
@@ -28,21 +37,34 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        // Query dasar dengan memuat relasi kategori
         $query = Product::with('category');
 
-        // Filter berdasarkan Kategori jika ada parameter ?category_id=...
         if ($request->has('category_id')) {
             $query->where('category_id', $request->category_id);
         }
 
-        // Fitur Pencarian jika ada parameter ?search=...
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Gunakan paginate (misal 10 data per halaman) agar Flutter bisa scroll tanpa berat
         $products = $query->paginate(10);
+
+        // Mengubah data di dalam paginator agar menyertakan URL penuh gambar
+        $products->through(function ($product) {
+            return [
+                'id' => $product->id,
+                'category_id' => $product->category_id,
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => $product->price,
+                'stock' => $product->stock,
+                // Mengubah path menjadi URL penuh (Contoh hasil: http://ip-laptop:8000/storage/products/xxx.jpg)
+                'image' => $product->image ? url(Storage::url($product->image)) : null,
+                'category' => $product->category,
+                'created_at' => $product->created_at,
+                'updated_at' => $product->updated_at,
+            ];
+        });
 
         return response()->json([
             'success' => true,
@@ -65,11 +87,25 @@ class ProductController extends Controller
             ], 404);
         }
 
+        // Format data sebelum dikirim ke JSON
+        $data = [
+            'id' => $product->id,
+            'category_id' => $product->category_id,
+            'name' => $product->name,
+            'description' => $product->description,
+            'price' => $product->price,
+            'stock' => $product->stock,
+            // Memastikan URL gambar penuh
+            'image' => $product->image ? url(Storage::url($product->image)) : null,
+            'category' => $product->category,
+            'created_at' => $product->created_at,
+            'updated_at' => $product->updated_at,
+        ];
+
         return response()->json([
             'success' => true,
             'message' => 'Detail Produk',
-            'data' => $product
+            'data' => $data
         ]);
     }
-
 }
