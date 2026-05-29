@@ -100,7 +100,7 @@ class AddressController extends Controller
      * Mengupdate alamat yang sudah ada.
      * Hanya bisa mengupdate alamat milik pelanggan sendiri.
      */
-    public function update(UpdateAddressRequest $request, int $id): JsonResponse
+    public function update(UpdateAddressRequest $request, $id): JsonResponse
     {
         $customer = $this->getCustomer($request);
         $address  = CustomerAddress::where('id', $id)
@@ -131,7 +131,7 @@ class AddressController extends Controller
      * Menghapus alamat pelanggan.
      * Jika yang dihapus adalah alamat primary, alamat terbaru akan dijadikan primary.
      */
-    public function destroy(Request $request, int $id): JsonResponse
+    public function destroy(Request $request, $id): JsonResponse
     {
         $customer = $this->getCustomer($request);
         $address  = CustomerAddress::where('id', $id)
@@ -165,7 +165,7 @@ class AddressController extends Controller
      * Set alamat tertentu sebagai alamat utama.
      * Semua alamat lain akan di-reset menjadi non-primary.
      */
-    public function setPrimary(Request $request, int $id): JsonResponse
+    public function setPrimary(Request $request, $id): JsonResponse
     {
         $customer = $this->getCustomer($request);
         $address  = CustomerAddress::where('id', $id)
