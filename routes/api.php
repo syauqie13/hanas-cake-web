@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\PinController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\ShippingController;
 use App\Http\Controllers\MidtransWebhookController;
 
 /*
@@ -61,7 +62,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // --- Checkout ---
+    // --- Checkout & Ongkir ---
+    Route::post('/shipping/calculate', [ShippingController::class, 'calculate']);
     Route::post('/checkout', [CheckoutController::class, 'process']);
 
     // --- Orders ---

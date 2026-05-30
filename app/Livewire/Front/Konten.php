@@ -8,11 +8,27 @@ use App\Models\OrderItem;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product; // Pastikan Model Product di-import
+use Illuminate\Support\Facades\Auth;
 
 #[Layout('components.layouts.ecommerce')]
 
 class Konten extends Component
 {
+    public function mount()
+    {
+        // Redirect admin/karyawan ke dashboard masing-masing
+        if (Auth::check()) {
+            $role = Auth::user()->role;
+
+            if ($role === 'admin') {
+                return $this->redirect(route('admin.dashboard'), navigate: true);
+            }
+
+            if ($role === 'karyawan') {
+                return $this->redirect(route('karyawan.dashboard'), navigate: true);
+            }
+        }
+    }
     public function render()
     {
         // $today = Carbon::today(); // Tidak dipakai lagi
