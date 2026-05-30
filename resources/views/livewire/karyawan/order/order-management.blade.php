@@ -164,8 +164,10 @@ table.table td {
                                 <select wire:model.live="filterStatus" class="shadow-sm form-control">
                                     <option value="">Semua Status</option>
                                     <option value="pending">Pending</option>
-                                    <option value="processing">Diproses</option>
-                                    <option value="completed">Selesai</option>
+                                    <option value="diproses">Diproses</option>
+                                    <option value="dikirim">Siap Diambil/Dikirim</option>
+                                    <option value="selesai">Selesai</option>
+                                    <option value="dibatalkan">Dibatalkan</option>
                                 </select>
                             </div>
 
@@ -416,6 +418,15 @@ table.table td {
                                     </li>
 
                                     <li class="px-0 list-group-item">
+                                        <strong>Metode Pengiriman:</strong>
+                                        @if($selectedOrder->delivery_type == 'pickup' || $selectedOrder->shipping_zone_name == 'Ambil di Toko (Pickup)')
+                                            <span class="badge badge-success"><i class="fas fa-walking mr-1"></i> Ambil Sendiri (Pickup)</span>
+                                        @else
+                                            <span class="badge badge-info"><i class="fas fa-truck mr-1"></i> Antar Kurir (Delivery)</span>
+                                        @endif
+                                    </li>
+
+                                    <li class="px-0 list-group-item">
 
                                         <strong>Alamat:</strong>
 
@@ -424,6 +435,26 @@ table.table td {
                                         <p class="mb-0">{{ $selectedOrder->shipping_city ?? '' }}, {{ $selectedOrder->shipping_postal_code ?? '' }}</p>
 
                                     </li>
+
+                                    @if($selectedOrder->delivery_type == 'delivery' || ($selectedOrder->delivery_type != 'pickup' && $selectedOrder->shipping_zone_name != 'Ambil di Toko (Pickup)'))
+                                        <li class="px-0 list-group-item">
+                                            <strong>Lokasi Koordinat:</strong>
+                                            @if($latitude && $longitude)
+                                                <div class="mt-2 d-flex flex-wrap align-items-center">
+                                                    <span class="badge badge-light border text-muted mr-2 mb-2">
+                                                        <i class="fas fa-map-marker-alt text-danger mr-1"></i> {{ $latitude }}, {{ $longitude }}
+                                                    </span>
+                                                    <a href="https://maps.google.com/?q={{ $latitude }},{{ $longitude }}" target="_blank" class="btn btn-xs btn-primary mb-2 shadow-sm">
+                                                        <i class="fas fa-directions mr-1"></i> Buka Google Maps
+                                                    </a>
+                                                </div>
+                                            @else
+                                                <div class="mt-1 text-warning small">
+                                                    <i class="fas fa-exclamation-triangle mr-1"></i> Koordinat tidak tersedia untuk alamat ini.
+                                                </div>
+                                            @endif
+                                        </li>
+                                    @endif
 
                                 </ul>
 

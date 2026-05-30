@@ -27,10 +27,10 @@ class OrderManagement extends Component
     public $selectedOrder;
 
     public $statusOptions = [
-        'processing' => 'Sedang Diproses',
-        'shipped' => 'Siap Diambil/Dikirim',
-        'completed' => 'Selesai',
-        'cancelled' => 'Dibatalkan',
+        'diproses' => 'Sedang Diproses',
+        'dikirim' => 'Siap Diambil/Dikirim',
+        'selesai' => 'Selesai',
+        'dibatalkan' => 'Dibatalkan',
     ];
 
     public function updatingSearch()
@@ -53,14 +53,22 @@ class OrderManagement extends Component
             return;
         }
 
-        // --- Tambahkan try-catch untuk keamanan ---
         try {
-            $order = Order::findOrFail($orderId);
+            $order = Order::with('user')->findOrFail($orderId);
             if ($order->status == $status) {
                 return; // Tidak ada perubahan
             }
             $order->status = $status;
             $order->save();
+
+            // Kirim notifikasi real-time ke user
+            if ($order->user) {
+                try {
+                    $order->user->notify(new \App\Notifications\OrderStatusNotification($order, $status));
+                } catch (\Exception $ne) {
+                    \Illuminate\Support\Facades\Log::error('Gagal mengirim notifikasi status order: ' . $ne->getMessage());
+                }
+            }
 
             $this->dispatch('notify', [
                 'message' => 'Status pesanan berhasil diperbarui.',
@@ -72,20 +80,49 @@ class OrderManagement extends Component
                 'icon' => 'error'
             ]);
         }
-        // --- Kurung kurawal penutup yang hilang ---
     }
+
+    public $latitude = null;
+    public $longitude = null;
 
     public function showDetailModal($orderId)
     {
         // Muat order beserta relasi item, produk, dan user
-        $this->selectedOrder = Order::with('items.product', 'user')->findOrFail($orderId);
+        $this->selectedOrder = Order::with('items.product', 'user.customer.addresses')->findOrFail($orderId);
         $this->detailModalOpen = true;
+
+        $this->latitude = null;
+        $this->longitude = null;
+        if ($this->selectedOrder->delivery_type === 'delivery' || ($this->selectedOrder->delivery_type !== 'pickup' && $this->selectedOrder->shipping_zone_name !== 'Ambil di Toko (Pickup)')) {
+            $shippingAddressText = $this->selectedOrder->shipping_address;
+            $addresses = optional(optional($this->selectedOrder->user)->customer)->addresses ?? collect();
+            
+            // Cari kecocokan alamat
+            $matchedAddress = $addresses->first(function($addr) use ($shippingAddressText) {
+                return $shippingAddressText && (
+                    str_contains(strtolower($shippingAddressText), strtolower($addr->detail_address)) || 
+                    str_contains(strtolower($addr->detail_address), strtolower($shippingAddressText))
+                );
+            });
+            
+            // Fallback ke alamat primary atau alamat pertama
+            if (!$matchedAddress) {
+                $matchedAddress = $addresses->firstWhere('is_primary', true) ?? $addresses->first();
+            }
+            
+            if ($matchedAddress) {
+                $this->latitude = $matchedAddress->latitude;
+                $this->longitude = $matchedAddress->longitude;
+            }
+        }
     }
 
     public function closeDetailModal()
     {
         $this->detailModalOpen = false;
         $this->selectedOrder = null;
+        $this->latitude = null;
+        $this->longitude = null;
     }
 
     public function export()
@@ -142,10 +179,10 @@ class OrderManagement extends Component
                 ->where('payment_status', 'pending')
                 ->where('created_at', '>', now()->subHour()) // Sembunyikan pending > 1 jam
                 ->count(),
-            'processing' => (clone $statsQuery)->where('status', 'processing')->count(), // 'diproses' dari DB
-            'shipped' => (clone $statsQuery)->where('status', 'shipped')->count(), // 'diproses' dari DB
-            'completed' => (clone $statsQuery)->where('status', 'completed')->count(), // 'selesai' dari DB
-            'cancelled' => (clone $statsQuery)->whereIn('status', ['dibatalkan'])->count(), // 'dibatalkan' dari DB
+            'processing' => (clone $statsQuery)->where('status', 'diproses')->count(),
+            'shipped' => (clone $statsQuery)->where('status', 'dikirim')->count(),
+            'completed' => (clone $statsQuery)->where('status', 'selesai')->count(),
+            'cancelled' => (clone $statsQuery)->whereIn('status', ['dibatalkan'])->count(),
         ];
 
         // 2. Logika Query Tabel (dari kode Anda)
