@@ -55,7 +55,38 @@ class CheckoutService
             }
         }
 
-        $grandTotal = (int) $validatedData['total_belanja'];
+        // --- HITUNG ONGKIR BERBASIS JARAK (sama seperti versi web) ---
+        $shippingCost = 0;
+        $distance = null;
+
+        if ($deliveryType === 'delivery' && $address) {
+            // Hitung jarak jika koordinat tersedia
+            if ($store->latitude && $store->longitude && $address->latitude && $address->longitude) {
+                $distance = $this->calculateDistance(
+                    $address->latitude,
+                    $address->longitude,
+                    $store->latitude,
+                    $store->longitude
+                );
+
+                // Tolak jika di luar jangkauan (maks 10 km)
+                if ($distance > 10) {
+                    throw new \Exception("Lokasi pengiriman di luar jangkauan (jarak: {$distance} km, maks: 10 km). Silakan ganti alamat atau pilih metode pickup.");
+                }
+
+                // Tarif: <= 1km = Rp 2.000, selebihnya kelipatan Rp 2.000/km
+                $shippingCost = $distance <= 1 ? 2000 : (int) (ceil($distance) * 2000);
+            }
+        }
+
+        // Grand total = total belanja + ongkir
+        $subtotal = (int) $validatedData['total_belanja'];
+        $grandTotal = $subtotal + $shippingCost;
+
+        // Label zona pengiriman untuk invoice
+        $shippingZoneName = $deliveryType === 'pickup'
+            ? "Pickup di {$store->name}"
+            : "Kirim Berbasis Jarak ({$distance}km)";
 
         DB::beginTransaction();
 
@@ -80,12 +111,11 @@ class CheckoutService
                 'shipping_phone'     => $address->receiver_phone ?? $user->phone,
                 'shipping_email'     => $user->email,
                 'shipping_address'   => $address->detail_address ?? null,
+                'shipping_city'      => $store->name,
 
-                // Simpan info toko yang dipilih
-                'shipping_zone_name' => $deliveryType === 'pickup'
-                    ? "Pickup di {$store->name}"
-                    : "Delivery dari {$store->name}",
-                'shipping_price'     => 0, // Ongkir dihitung oleh mekanisme lain
+                // Ongkir dihitung otomatis berdasarkan jarak
+                'shipping_zone_name' => $shippingZoneName,
+                'shipping_price'     => $shippingCost,
             ]);
 
             // Simpan setiap item pesanan
@@ -99,7 +129,7 @@ class CheckoutService
                 ]);
             }
 
-            // Generate Snap Token dari Midtrans
+            // Generate Snap Token dari Midtrans (dengan grand total termasuk ongkir)
             $snapToken = $this->midtransService->createSnapToken(
                 $merchantOrderId,
                 $grandTotal,
@@ -112,7 +142,7 @@ class CheckoutService
 
             DB::commit();
 
-            Log::info("Checkout berhasil: Order #{$order->id}, Merchant: {$merchantOrderId}");
+            Log::info("Checkout berhasil: Order #{$order->id}, Merchant: {$merchantOrderId}, Subtotal: {$subtotal}, Ongkir: {$shippingCost}, Grand Total: {$grandTotal}");
 
             return [
                 'order'      => $order,
@@ -123,5 +153,23 @@ class CheckoutService
             Log::error("Checkout gagal: " . $e->getMessage());
             throw $e;
         }
+    }
+
+    /**
+     * Hitung jarak antara 2 titik koordinat menggunakan rumus Haversine.
+     * (Sama persis dengan versi web di CheckoutPage.php)
+     *
+     * @return float Jarak dalam kilometer (dibulatkan 2 desimal)
+     */
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2): float
+    {
+        $earthRadius = 6371; // km
+        $dLat = deg2rad((float)$lat2 - (float)$lat1);
+        $dLon = deg2rad((float)$lon2 - (float)$lon1);
+        $a = sin($dLat / 2) * sin($dLat / 2)
+           + cos(deg2rad((float)$lat1)) * cos(deg2rad((float)$lat2))
+           * sin($dLon / 2) * sin($dLon / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        return round($earthRadius * $c, 2);
     }
 }

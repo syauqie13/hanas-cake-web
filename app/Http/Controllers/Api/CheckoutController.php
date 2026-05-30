@@ -57,8 +57,10 @@ class CheckoutController extends Controller
             );
 
             return $this->successResponse([
-                'order_id'   => $result['order']->id,
-                'snap_token' => $result['snap_token'],
+                'order_id'      => $result['order']->id,
+                'snap_token'    => $result['snap_token'],
+                'shipping_cost' => (int) $result['order']->shipping_price,
+                'grand_total'   => (int) $result['order']->total,
             ], 'Checkout Berhasil');
         } catch (\Exception $e) {
             return $this->errorResponse('Checkout gagal: ' . $e->getMessage(), 500);
