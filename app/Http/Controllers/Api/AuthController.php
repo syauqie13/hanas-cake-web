@@ -178,4 +178,29 @@ class AuthController extends Controller
 
         return $this->successResponse(null, 'Logout Berhasil');
     }
+
+    /**
+     * DELETE /api/profile
+     *
+     * Hapus akun pengguna secara permanen beserta token-nya.
+     * Karena menggunakan ON DELETE SET NULL di database, riwayat order
+     * akan tetap ada untuk keperluan laporan keuangan.
+     */
+    public function deleteAccount(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        // Hapus avatar jika ada
+        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        // Hapus semua token Sanctum agar tidak bisa digunakan lagi
+        $user->tokens()->delete();
+
+        // Hapus user
+        $user->delete();
+
+        return $this->successResponse(null, 'Akun berhasil dihapus');
+    }
 }

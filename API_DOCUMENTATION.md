@@ -246,7 +246,29 @@ Token didapatkan dari response endpoint `/register` atau `/login`.
 
 ---
 
-## 7. Kategori
+## 🗑 Hapus Akun
+
+**`DELETE /api/profile`** 🔒
+
+Menghapus akun pengguna secara permanen. Semua riwayat pesanan (orders) yang terkait dengan pengguna ini akan dipertahankan untuk keperluan laporan keuangan (hanya menghilangkan referensi ID pengguna). Token akses saat ini juga akan dicabut.
+
+**Header Required:**
+```http
+Authorization: Bearer 1|abcdef12345...
+```
+
+**Response Sukses (200 OK):**
+```json
+{
+    "success": true,
+    "message": "Akun berhasil dihapus",
+    "data": null
+}
+```
+
+---
+
+## 🛍 Kategori Produk
 
 **`GET /api/categories`**
 
