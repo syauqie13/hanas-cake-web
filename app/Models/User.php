@@ -70,6 +70,22 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Customer::class);
     }
 
+    /**
+     * Daftar produk yang difavoritkan oleh user ini.
+     */
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * Produk yang difavoritkan (via pivot).
+     */
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(Product::class, 'favorites')->withTimestamps();
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class, 'cashier_id');

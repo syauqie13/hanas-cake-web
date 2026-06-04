@@ -63,6 +63,14 @@ class Product extends Model
         return $this->hasMany(ProductRecipe::class);
     }
 
+    /**
+     * Users yang memfavoritkan produk ini.
+     */
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
+    }
+
     public function getImageUrlAttribute()
     {
         if ($this->image) {

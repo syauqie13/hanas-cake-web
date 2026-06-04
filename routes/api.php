@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ShippingController;
+use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\MidtransWebhookController;
 
 /*
@@ -85,6 +86,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // --- Notifikasi ---
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+
+    // --- Favorit Produk ---
+    Route::get('/favorites', [FavoriteController::class, 'index']);
+    Route::post('/favorites/toggle/{product_id}', [FavoriteController::class, 'toggle']);
+    Route::get('/favorites/check/{product_id}', [FavoriteController::class, 'check']);
+    Route::delete('/favorites/{product_id}', [FavoriteController::class, 'destroy']);
 });
 
 
