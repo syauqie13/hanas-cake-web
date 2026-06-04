@@ -4,14 +4,15 @@ namespace App\Livewire\Frontend;
 
 use Livewire\Component;
 use App\Models\Product;
-use App\Models\Category; // 1. Tambahkan Model Category
+use App\Models\Category;
 use App\Models\CustomerAddress;
+use App\Models\Favorite;
 use App\Models\Store;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Title;
-use Livewire\WithPagination; // 2. Tambahkan WithPagination
+use Livewire\WithPagination;
 
 #[Layout('components.layouts.ecommerce')]
 #[Title('Selamat Datang di Toko PO Kami')]
@@ -55,6 +56,34 @@ class Shop extends Component
         }
 
         $this->dispatch('open-product-modal');
+    }
+
+    /**
+     * Toggle favorit produk dari halaman Toko.
+     * Menggunakan wire:click.stop agar klik tidak membuka modal produk.
+     */
+    public function toggleFavorite($productId)
+    {
+        if (!Auth::check()) {
+            $this->dispatch('showLoginWarning');
+            return;
+        }
+
+        $user = Auth::user();
+        $existing = Favorite::where('user_id', $user->id)
+            ->where('product_id', $productId)
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+            $this->dispatch('notify', message: 'Dihapus dari favorit', icon: 'info');
+        } else {
+            Favorite::create([
+                'user_id'    => $user->id,
+                'product_id' => $productId,
+            ]);
+            $this->dispatch('notify', message: 'Ditambahkan ke favorit ❤️', icon: 'success');
+        }
     }
 
     private function calculateDistance($lat1, $lon1, $lat2, $lon2)
@@ -325,9 +354,17 @@ class Shop extends Component
         // ===================================
         $categories = Category::orderBy('name')->get();
 
+        // Ambil ID produk yang difavoritkan oleh user yang login
+        $favoriteIds = collect();
+        if (Auth::check()) {
+            $favoriteIds = Favorite::where('user_id', Auth::id())
+                ->pluck('product_id');
+        }
+
         return view('livewire.frontend.shop', [
-            'products' => $products,
-            'categories' => $categories // Kirim kategori ke view
+            'products'    => $products,
+            'categories'  => $categories,
+            'favoriteIds' => $favoriteIds,
         ]);
     }
 }

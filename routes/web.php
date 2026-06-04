@@ -34,6 +34,7 @@ use App\Livewire\Auth\VerifyEmail;
 use App\Livewire\Frontend\AddressCreate;
 use App\Livewire\Frontend\AddressEdit;
 use App\Livewire\Frontend\SetupPin;
+use App\Livewire\Frontend\MyFavorites;
 use App\Livewire\Frontend\UserProfile\ProfileDashboard;
 use App\Livewire\Karyawan\Store\StoreManagement;
 use Illuminate\Support\Facades\Artisan;
@@ -156,6 +157,7 @@ Route::prefix('pelanggan')->middleware(['auth', 'is.pelanggan', 'verified'])->na
     Route::get('/orders/{order}/success', \App\Livewire\Frontend\OrderSuccessPage::class)->name('orders.success');
     Route::get('/pay/{order}', [CustomerPaymentController::class, 'show'])->name('pay');
     Route::get('/setup-pin', SetupPin::class)->name('setup-pin');
+    Route::get('/favorites', MyFavorites::class)->name('favorites');
     Route::post('/logout', function (Request $request) {
         Auth::logout();
         $request->session()->invalidate();

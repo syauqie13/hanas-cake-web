@@ -195,6 +195,13 @@
                 </div>
                 <span class="text-[10px] font-semibold {{ request()->routeIs('pelanggan.my-orders') ? 'block' : 'hidden' }}">{{ __('Pesanan') }}</span>
             </a>
+
+            <a href="{{ route('pelanggan.favorites') }}" wire:navigate class="flex flex-col items-center justify-center w-16 h-12 {{ request()->routeIs('pelanggan.favorites') ? 'bg-[#5c4033] text-white rounded-xl shadow-md' : 'text-[#8b6f5e] hover:text-[#5c4033] transition-colors' }}">
+                <div class="relative">
+                    <i class="{{ request()->routeIs('pelanggan.favorites') ? 'fas' : 'far' }} fa-heart text-xl mb-0.5"></i>
+                </div>
+                <span class="text-[10px] font-semibold {{ request()->routeIs('pelanggan.favorites') ? 'block' : 'hidden' }}">{{ __('Favorit') }}</span>
+            </a>
             
             <a href="{{ route('pelanggan.profile') }}" wire:navigate class="flex flex-col items-center justify-center w-16 h-12 {{ request()->routeIs('pelanggan.profile') ? 'bg-[#5c4033] text-white rounded-xl shadow-md' : 'text-[#8b6f5e] hover:text-[#5c4033] transition-colors' }}">
                 <i class="far fa-user text-xl mb-0.5"></i>

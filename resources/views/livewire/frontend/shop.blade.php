@@ -280,10 +280,19 @@
                                     Rp
                                     {{ number_format($product->price - ($product->price * $product->discount / 100), 0, ',', '.') }}
                                 </span>
-                                <button wire:click.stop="addToCart({{ $product->id }})"
-                                    class="w-6 h-6 rounded-full bg-[#5c4033] text-white flex items-center justify-center hover:bg-[#4a332a] hover:scale-110 transition-transform active:scale-95">
-                                    <i class="fas fa-plus text-[10px]"></i>
-                                </button>
+                                <div class="flex items-center gap-1.5">
+                                    @auth
+                                        <button wire:click.stop="toggleFavorite({{ $product->id }})"
+                                            class="w-6 h-6 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95
+                                            {{ $favoriteIds->contains($product->id) ? 'bg-red-100 text-red-500' : 'bg-gray-100 text-gray-400 hover:text-red-400' }}">
+                                            <i class="{{ $favoriteIds->contains($product->id) ? 'fas' : 'far' }} fa-heart text-[10px]"></i>
+                                        </button>
+                                    @endauth
+                                    <button wire:click.stop="addToCart({{ $product->id }})"
+                                        class="w-6 h-6 rounded-full bg-[#5c4033] text-white flex items-center justify-center hover:bg-[#4a332a] hover:scale-110 transition-transform active:scale-95">
+                                        <i class="fas fa-plus text-[10px]"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
