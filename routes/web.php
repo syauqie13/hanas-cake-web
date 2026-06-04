@@ -50,6 +50,26 @@ Route::get('/gas-migrate', function () {
 
     return "Database berhasil di-fresh + seed!";
 });
+
+// ✅ Jalankan migrasi BARU saja (aman, tidak menghapus data yang sudah ada)
+Route::get('/run-migrate', function () {
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        $output = Artisan::output();
+
+        return response('<pre style="font-family:monospace;background:#1a1a2e;color:#00ff88;padding:20px;border-radius:8px;">
+<strong style="color:#fff;font-size:18px;">✅ Migrasi Berhasil</strong>
+
+' . htmlspecialchars($output) . '
+</pre>');
+    } catch (\Exception $e) {
+        return response('<pre style="font-family:monospace;background:#1a1a2e;color:#ff4444;padding:20px;border-radius:8px;">
+<strong style="color:#fff;font-size:18px;">❌ Migrasi Gagal</strong>
+
+' . htmlspecialchars($e->getMessage()) . '
+</pre>', 500);
+    }
+});
 Route::get('/gas-fresh', function () {
     // 1. Tentukan path target (sumber asli foto) dan link (tujuan di public_html)
     // SESUAIKAN "syauqieb" dengan username DirectAdmin / nama folder home kamu!
