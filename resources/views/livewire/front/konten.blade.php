@@ -59,7 +59,7 @@
         </div>
 
         <!-- Pre-Order: Full width dengan layout flex-row -->
-        <a href="{{ route('ecommerce', ['mode' => 'po']) }}" wire:navigate class="relative overflow-hidden bg-white border-2 border-[#f4dfd4] rounded-2xl p-6 md:p-8 flex justify-between items-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+        <a href="https://wa.me/6288225853364?text={{ urlencode('Halo Hana\'s Bakery! Saya ingin menanyakan informasi Pre-Order kue. 🎂') }}" target="_blank" class="relative overflow-hidden bg-white border-2 border-[#f4dfd4] rounded-2xl p-6 md:p-8 flex justify-between items-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
             <div class="flex-1">
                 <h3 class="text-[#5c4033] font-bold text-2xl md:text-3xl mb-2">Pre-Order</h3>
                 <p class="text-[#8b6f5e] text-sm md:text-lg">Rencanakan momen spesial<br class="hidden md:block"> bersama Hana's Bakery</p>
